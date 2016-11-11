@@ -1,0 +1,4 @@
+Commenter la ligne (1571) de /vendor/phansys/getid3/GetId3/Lib/Helper.php
+=> require_once(dirname(__FILE__) . '/getid3.php');
+
+Commenter la function __autoload ligne (69) de /vendor/phansys/getid3/GetId3/GetId3.php

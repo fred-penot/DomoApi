@@ -1,0 +1,9 @@
+ - remplacer le fichier '/DomoApi/vendor/knplabs/console-service-provider/Knp/Provider/ConsoleServiceProvider.php' 
+   par le fichier /DomoApi/app/doc/ConsoleServiceProvider.php
+   
+ - lire les fichiers getId3.txt et allocine afin d'installer correctement chacun de ces services
+ 
+ - créer la base en exécutant la commande suivante : echo "create database DomoApi" | mysql -u {user} -p{password}
+   puis insérer le dump en exécutant : mysql -u {user} -p{password} DomoApi < /home/apps/DomoApi/app/doc/DomoApiV4.sql || echo "Erreur : impossible d'insérer les données en base."
+   
+ - installer mediainfo en exécutant en root : sudo apt-get install mediainfo   

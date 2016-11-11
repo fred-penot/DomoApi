@@ -1,0 +1,4 @@
+ajouter le dossier "allocine" dans le dossier vendor puis
+ajouter cette ligne dans le tableau du fichier "/DomoApi/vendor/composer/autoload_psr4.php" :
+
+'Allocine\\' => array($vendorDir . '/allocine'),

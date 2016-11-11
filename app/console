@@ -1,0 +1,20 @@
+#!/usr/bin/env php
+<?php
+
+// set to run indefinitely if needed
+set_time_limit(0);
+
+/* Optional. It’s better to do it in the php.ini file */
+date_default_timezone_set('Europe/Paris'); 
+
+// include the composer autoloader
+require_once __DIR__ . '/../vendor/autoload.php'; 
+
+$app = new Silex\Application();
+putenv("APPLICATION_ENV=dev");
+require __DIR__ . '/bootstrap.php';
+
+$console = &$app["console"];
+require __DIR__ . '/consoleCommand.php';
+$console->run();
+?>
