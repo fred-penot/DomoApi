@@ -5,7 +5,8 @@ if (strstr(strtolower(getenv('APPLICATION_ENV')), "dev") !== false) {
 } elseif (strstr(strtolower(getenv('APPLICATION_ENV')), "prod") !== false) {
     $env = "prod";
 } else {
-    die("Veuillez indiquer une valeur <development> ou <production> pour APPLICATION_ENV");
+    $env = "dev";
+    //die("Veuillez indiquer une valeur <development> ou <production> pour APPLICATION_ENV");
 }
 // chargement des paramètres de l'application en fonction de l'environnement
 require __DIR__ . '/parameters_' . $env . '.php';
