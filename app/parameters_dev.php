@@ -5,7 +5,7 @@ $app['parameter.db.usenet.host'] = 'localhost';
 $app['parameter.db.name'] = 'DomoApi';
 $app['parameter.db.usenet.name'] = 'HomeOS';
 $app['parameter.db.login'] = 'root';
-$app['parameter.db.password'] = 'Fwedelph6580$';
+$app['parameter.db.password'] = 'docker';
 $app['parameter.db.usenet.login'] = 'fwed';
 $app['parameter.db.usenet.password'] = 'Fred6580$';
 
