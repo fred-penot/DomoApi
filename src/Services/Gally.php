@@ -13,10 +13,24 @@ class Gally {
 
     public function getVocalCommand() {
         try {
-            $sql = "SELECT cv.name as command, cf.name as function FROM commande_vocale cv " .
+            $sql = "SELECT cv.id as commande_vocale_id, cv.name as command, cf.name as function, ".
+                 "cv.success_message as success_message, cv.error_message as error_message FROM commande_vocale cv " .
                  "JOIN commande_function cf ON cf.id=cv.commande_function_id ;";
             $resultCommand = $this->db->fetchAll($sql);
-            return $resultCommand;
+            $commands = array();
+            foreach ($resultCommand as $command) {
+                $sql = "SELECT `key`, `value` FROM commande_vocale_keyword " .
+                     "WHERE commande_vocale_id = ".$command['commande_vocale_id']." ;";
+                $resultKeyword = $this->db->fetchAll($sql);
+		        $commands[] = array(
+                    "command" => $command['command'],
+                    "function" => $command['function'],
+                    "success_message" => $command['success_message'],
+                    "error_message" => $command['error_message'],
+                    "keyword" => $resultKeyword,
+                );
+            }
+            return $commands;
         } catch (\Exception $ex) {
             return $ex;
         }
