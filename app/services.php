@@ -106,3 +106,6 @@ $app['service.freebox.media'] = function ($app) {
 $app['service.analyze.media'] = function () {
     return new DomoApi\Services\AnalyzeMedia();
 };
+$app['service.meteo'] = function () {
+    return new DomoApi\Services\Meteo();
+};
