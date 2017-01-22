@@ -21,19 +21,16 @@ class Gally {
                 $sqlKeyword = "SELECT `key`, `value` FROM commande_vocale_keyword " .
                      "WHERE commande_vocale_id = ".$command['commande_vocale_id']." ;";
                 $resultKeyword = $this->db->fetchAll($sqlKeyword);
-                $sqlMessage = "SELECT `success`, `message` FROM commande_vocale_message " .
-                    "WHERE commande_vocale_id = ".$command['commande_vocale_id']." ;";
-                $resultMessage = $this->db->fetchAll($sqlMessage);
-                $messages = [];
-                $messages['success'] = [];
-                $messages['error'] = [];
-                foreach ($resultMessage as $message) {
-                    if ($message['success']) {
-                        $messages['success'][] = $message['message'];
-                    } else {
-                        $messages['error'][] = $message['message'];
-                    }
-                }
+                $sqlMessageSuccess = "SELECT `message` FROM commande_vocale_message " .
+                    "WHERE commande_vocale_id = ".$command['commande_vocale_id']." AND success=1 ;";
+                $resultMessageSuccess = $this->db->fetchAll($sqlMessageSuccess);
+                $sqlMessageError = "SELECT `message` FROM commande_vocale_message " .
+                    "WHERE commande_vocale_id = ".$command['commande_vocale_id']." AND success=0 ;";
+                $resultMessageError = $this->db->fetchAll($sqlMessageError);
+                $messages = [
+                    'success' => $resultMessageSuccess,
+                    'error' => $resultMessageError,
+                ];
 		        $commands[] = array(
                     "command" => $command['command'],
                     "function" => $command['function'],
