@@ -16,7 +16,7 @@ class Gally {
             $sql = "SELECT cv.id as commande_vocale_id, cv.name as command, cf.name as function, cv.need_response as need_response ".
                  " FROM commande_vocale cv JOIN commande_function cf ON cf.id=cv.commande_function_id ;";
             $resultCommand = $this->db->fetchAll($sql);
-            $commands = array();
+            $commands = [];
             foreach ($resultCommand as $command) {
                 $sqlKeyword = "SELECT `key`, `value` FROM commande_vocale_keyword " .
                      "WHERE commande_vocale_id = ".$command['commande_vocale_id']." ;";
@@ -31,13 +31,13 @@ class Gally {
                     'success' => $resultMessageSuccess,
                     'error' => $resultMessageError,
                 ];
-		        $commands[] = array(
+		        $commands[] = [
                     "command" => $command['command'],
                     "function" => $command['function'],
                     "need_response" => $command['need_response'],
                     "message" => $messages,
                     "keyword" => $resultKeyword,
-                );
+                ];
             }
             return $commands;
         } catch (\Exception $ex) {
