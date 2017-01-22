@@ -13,20 +13,32 @@ class Gally {
 
     public function getVocalCommand() {
         try {
-            $sql = "SELECT cv.id as commande_vocale_id, cv.name as command, cf.name as function, ".
-                 "cv.success_message as success_message, cv.error_message as error_message FROM commande_vocale cv " .
-                 "JOIN commande_function cf ON cf.id=cv.commande_function_id ;";
+            $sql = "SELECT cv.id as commande_vocale_id, cv.name as command, cf.name as function, cv.need_response as need_response ".
+                 " FROM commande_vocale cv JOIN commande_function cf ON cf.id=cv.commande_function_id ;";
             $resultCommand = $this->db->fetchAll($sql);
             $commands = array();
             foreach ($resultCommand as $command) {
-                $sql = "SELECT `key`, `value` FROM commande_vocale_keyword " .
+                $sqlKeyword = "SELECT `key`, `value` FROM commande_vocale_keyword " .
                      "WHERE commande_vocale_id = ".$command['commande_vocale_id']." ;";
-                $resultKeyword = $this->db->fetchAll($sql);
+                $resultKeyword = $this->db->fetchAll($sqlKeyword);
+                $sqlMessage = "SELECT `success`, `message` FROM commande_vocale_message " .
+                    "WHERE commande_vocale_id = ".$command['commande_vocale_id']." ;";
+                $resultMessage = $this->db->fetchAll($sqlMessage);
+                $messages = [];
+                $messages['success'] = [];
+                $messages['error'] = [];
+                foreach ($resultMessage as $message) {
+                    if ($message['success']) {
+                        $messages['success'][] = $message['message'];
+                    } else {
+                        $messages['error'][] = $message['message'];
+                    }
+                }
 		        $commands[] = array(
                     "command" => $command['command'],
                     "function" => $command['function'],
-                    "success_message" => $command['success_message'],
-                    "error_message" => $command['error_message'],
+                    "need_response" => $command['need_response'],
+                    "message" => $messages,
                     "keyword" => $resultKeyword,
                 );
             }
