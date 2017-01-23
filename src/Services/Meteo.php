@@ -45,4 +45,44 @@ class Meteo {
             return $ex;
         }
     }
+
+    public function getCities($word) {
+        try {
+            $url = 'http://www.cp-ville.com/cpcom.php?cpcommune='.$word;
+            $result = file_get_contents($url);
+            $json = trim(str_replace(["jsoncallback(", ");", "\n"], '', $result));
+            $citiesAndCp = explode('{"ville":"', $json);
+            $finalReturn = [];
+            foreach ($citiesAndCp as $cityAndCp) {
+                list($city, $cpToExtract) = explode('","cp":"', $cityAndCp);
+                if ($cpToExtract) {
+                    list($cp, $trash) = explode('"},"', $cpToExtract);
+                    $finalReturn[] = [
+                        'name' => $city,
+                        'cp' => $cp,
+                    ];
+                }
+            }
+            return $finalReturn;
+        } catch (\Exception $ex) {
+            return $ex;
+        }
+    }
+
+    public function getCoordinatesCity($city, $cp) {
+        try {
+            $url = 'http://api-adresse.data.gouv.fr/search/?q='.$city;
+            $infosCity = json_decode(file_get_contents($url), true);
+            $finalReturn = [];
+            foreach ($infosCity['features'] as $feature) {
+                if ($feature['properties']['postcode'] == $cp) {
+                    $finalReturn = $feature['geometry']['coordinates'];
+                    break;
+                }
+            }
+            return $finalReturn;
+        } catch (\Exception $ex) {
+            return $ex;
+        }
+    }
 }
