@@ -8,9 +8,9 @@ class Meteo {
 
     public function __destruct() {}
 
-    public function getPrevision() {
+    public function getPrevision($latitude, $longitude) {
         try {
-            $url = 'http://www.infoclimat.fr/public-api/gfs/json?_ll=47.245191,-1.575853';
+            $url = 'http://www.infoclimat.fr/public-api/gfs/json?_ll='.$latitude.','.$longitude;
             $url .= '&_auth=BR8DFAB%2BV3UHKlViAnRXflkxVGEKfFVyAHwGZVs%2BBXgEbwNiUzNcOgBuVisBLgo8WHUGZQE6UmIGbVEpAHJePwVvA28Aa1cwB2hVMAItV3xZd1Q1CipVcgBrBmlbKAVnBG4DZ1MuXD8AbVYqATAKO1hqBnkBIVJrBmFRPgBoXjwFZgNmAGpXNwdgVSgCLVdmWWJUPAoxVTkAMQZnWz4FYgQxAzNTYlw%2FAGxWKgEwCjxYawZnATxSbgZiUTIAcl4iBR8DFAB%2BV3UHKlViAnRXflk%2FVGoKYQ%3D%3D&_c=53bf3fcf3261a06e4894aac17fd0325d';
             $infos = json_decode(file_get_contents($url), true);
             $previsions = [];
