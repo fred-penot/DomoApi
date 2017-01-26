@@ -47,13 +47,53 @@ $gally->get('/api/talk/to/someone/{token}/{name}/{function}',
 $gally->get('/api/talk/to/somebody/{token}/{name1}/{name2}', 
     function ($token, $name1, $name2) use ($app) {
         try {
-            $commands = $app['service.gally']->talkTo($name1, $name2);
+            $talkTo = $app['service.gally']->talkTo($name1, $name2);
             if ($talkTo instanceof \Exception) {
                 throw new \Exception($talkTo->getMessage());
             }
             $app['retour'] = array(
                 "data" => array(
                     "talk" => $talkTo
+                )
+            );
+        } catch (\Exception $ex) {
+            $app['retour'] = $ex;
+        }
+        return new Response();
+    })
+    ->before($checkAuth, Application::EARLY_EVENT)
+    ->after($jsonReturn);
+
+$gally->get('/api/set/param/{token}/{sexe}/{gallyName}/{birthTimestamp}/{birthNameCity}/{birthCp}/{currentNameCity}/{currentCp}',
+    function ($token, $sexe, $gallyName, $birthTimestamp, $birthNameCity, $birthCp, $currentNameCity, $currentCp) use ($app) {
+        try {
+            $setParam = $app['service.gally']->setParam($app['user_id'], $sexe, $gallyName, $birthTimestamp, $birthNameCity, $birthCp, $currentNameCity, $currentCp);
+            if ($setParam instanceof \Exception) {
+                throw new \Exception($setParam->getMessage());
+            }
+            $app['retour'] = array(
+                "data" => array(
+                    "setParam" => $setParam
+                )
+            );
+        } catch (\Exception $ex) {
+            $app['retour'] = $ex;
+        }
+        return new Response();
+    })
+    ->before($checkAuth, Application::EARLY_EVENT)
+    ->after($jsonReturn);
+
+$gally->get('/api/get/param/{token}',
+    function ($token) use ($app) {
+        try {
+            $getParam = $app['service.gally']->getParam($app['user_id']);
+            if ($getParam instanceof \Exception) {
+                throw new \Exception($getParam->getMessage());
+            }
+            $app['retour'] = array(
+                "data" => array(
+                    "param" => $getParam
                 )
             );
         } catch (\Exception $ex) {
