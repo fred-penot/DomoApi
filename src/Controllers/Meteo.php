@@ -4,10 +4,10 @@ use Symfony\Component\HttpFoundation\Response;
 
 $meteo = $app['controllers_factory'];
 
-$meteo->get('/api/prevision/{token}/{latitude}/{longitude}',
-    function ($token, $latitude, $longitude) use($app) {
+$meteo->get('/api/prevision/{token}/{latitude}/{longitude}/{timestamp}',
+    function ($token, $latitude, $longitude, $timestamp) use($app) {
         try {
-            $prevision = $app['service.meteo']->getPrevision($latitude, $longitude);
+            $prevision = $app['service.meteo']->getPrevision($latitude, $longitude, $timestamp);
             if ($prevision instanceof \Exception) {
                 throw new \Exception($prevision->getMessage());
             }
