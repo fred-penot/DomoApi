@@ -84,6 +84,41 @@ class Gally {
         }
     }
 
+    public function setParam($userId, $sexe, $gallyName, $birthTimestamp, $birthNameCity, $birthCp, $currentNameCity, $currentCp) {
+        try {
+            $queryCheck = 'SELECT * FROM gally_ia_setting WHERE `user_id`='.$userId.' ;';
+            $resultCheck = $this->db->fetchAll($queryCheck);
+            if (count($resultCheck)==0) {
+                $query = 'INSERT INTO gally_ia_setting (`user_id`, `sexe`, `name`, `birth_timestamp`, `birth_city`, `birth_cp`, `current_city`, `current_cp`) VALUES ('.$userId.', "' .
+                    $sexe . '", "'.$gallyName.'", '.$birthTimestamp.', "'.$birthNameCity.'", "'.$birthCp.'", "'.$currentNameCity.'", "'.$currentCp.'");';
+            } else {
+                $query = 'UPDATE gally_ia_setting SET `sexe`="'.$sexe.'", `name`="'.$gallyName.'", `birth_timestamp`='.$birthTimestamp.', `birth_city`="'.$birthNameCity.'", `birth_cp`="'.$birthCp.'", `current_city`="'.$currentNameCity.'", `current_cp`="'.$currentCp.'" WHERE `user_id`='.$userId.' ;';
+            }
+            $result = $this->db->exec($query);
+            if (! $result) {
+                throw new \Exception(
+                    "Erreur lors de la sauvegarde des paramètres.");
+            }
+            return true;
+        } catch (\Exception $ex) {
+            return $ex;
+        }
+    }
+
+    public function getParam($userId) {
+        try {
+            $param = [];
+            $query = 'SELECT `sexe`, `name`, `birth_timestamp`, `birth_city`, `birth_cp`, `current_city`, `current_cp` FROM gally_ia_setting WHERE `user_id`='.$userId.' ;';
+            $result = $this->db->fetchAll($query);
+            if (count($result)>0) {
+                $param = $result[0];
+            }
+            return $param;
+        } catch (\Exception $ex) {
+            return $ex;
+        }
+    }
+
     private function getCommandFunction($name) {
         try {
             $sqlCommandFunction = "SELECT * FROM commande_function WHERE UPPER(name)='" .
