@@ -21,10 +21,10 @@ class Gally {
                 $sqlKeyword = "SELECT `key`, `value` FROM commande_vocale_keyword " .
                      "WHERE commande_vocale_id = ".$command['commande_vocale_id']." ;";
                 $resultKeyword = $this->db->fetchAll($sqlKeyword);
-                $sqlMessageSuccess = "SELECT `message` FROM commande_vocale_message " .
+                $sqlMessageSuccess = "SELECT `message`, `is_repeat` FROM commande_vocale_message " .
                     "WHERE commande_vocale_id = ".$command['commande_vocale_id']." AND success=1 ;";
                 $resultMessageSuccess = $this->db->fetchAll($sqlMessageSuccess);
-                $sqlMessageError = "SELECT `message` FROM commande_vocale_message " .
+                $sqlMessageError = "SELECT `message`, `is_repeat` FROM commande_vocale_message " .
                     "WHERE commande_vocale_id = ".$command['commande_vocale_id']." AND success=0 ;";
                 $resultMessageError = $this->db->fetchAll($sqlMessageError);
                 $messages = [
@@ -32,6 +32,7 @@ class Gally {
                     'error' => $resultMessageError,
                 ];
 		        $commands[] = [
+                    "id" => $command['commande_vocale_id'],
                     "command" => $command['command'],
                     "function" => $command['function'],
                     "need_response" => $command['need_response'],
@@ -114,6 +115,40 @@ class Gally {
                 $param = $result[0];
             }
             return $param;
+        } catch (\Exception $ex) {
+            return $ex;
+        }
+    }
+
+    public function setHistory($userId, $commandeVocaleId, $timestamp) {
+        try {
+            $query = 'INSERT INTO gally_ia_history (`user_id`, `commande_vocale_id`, `timestamp`) VALUES ('.$userId.', ' .
+                $commandeVocaleId.', '.$timestamp.');';
+            $result = $this->db->exec($query);
+            if (! $result) {
+                throw new \Exception(
+                    "Erreur lors de la sauvegarde de l'historique.");
+            }
+            return true;
+        } catch (\Exception $ex) {
+            return $ex;
+        }
+    }
+
+    public function getHistoryCommandDay($userId, $commandeVocaleId, $timestamp) {
+        try {
+            $timestampToDate = new \DateTime();
+            $timestampToDate->setTimestamp($timestamp);
+            $timestamp1 = new \DateTime($timestampToDate->format('Y-m-d').'T00:00:00+0100',
+                new \DateTimeZone("Europe/Paris"));
+            $timestamp2 = new \DateTime($timestampToDate->format('Y-m-d').'T23:59:59+0100',
+                new \DateTimeZone("Europe/Paris"));
+            $query = 'SELECT * FROM gally_ia_history WHERE `user_id`='.$userId.
+                ' AND `commande_vocale_id`='.$commandeVocaleId.
+                ' AND `timestamp` BETWEEN '.$timestamp1->getTimestamp().
+                ' AND '.$timestamp2->getTimestamp().';';
+            $result = $this->db->fetchAll($query);
+            return count($result);
         } catch (\Exception $ex) {
             return $ex;
         }
