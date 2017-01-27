@@ -104,4 +104,44 @@ $gally->get('/api/get/param/{token}',
     ->before($checkAuth, Application::EARLY_EVENT)
     ->after($jsonReturn);
 
+$gally->get('/api/set/history/{token}/{commandeVocaleId}/{timestamp}',
+    function ($token, $commandeVocaleId, $timestamp) use ($app) {
+        try {
+            $setHistory = $app['service.gally']->setHistory($app['user_id'], $commandeVocaleId, $timestamp);
+            if ($setHistory instanceof \Exception) {
+                throw new \Exception($setHistory->getMessage());
+            }
+            $app['retour'] = array(
+                "data" => array(
+                    "setHistory" => $setHistory
+                )
+            );
+        } catch (\Exception $ex) {
+            $app['retour'] = $ex;
+        }
+        return new Response();
+    })
+    ->before($checkAuth, Application::EARLY_EVENT)
+    ->after($jsonReturn);
+
+$gally->get('/api/get/history/command/day/{token}/{commandeVocaleId}/{timestamp}',
+    function ($token, $commandeVocaleId, $timestamp) use ($app) {
+        try {
+            $getHistoryCommandDay = $app['service.gally']->getHistoryCommandDay($app['user_id'], $commandeVocaleId, $timestamp);
+            if ($getHistoryCommandDay instanceof \Exception) {
+                throw new \Exception($getHistoryCommandDay->getMessage());
+            }
+            $app['retour'] = array(
+                "data" => array(
+                    "history" => $getHistoryCommandDay
+                )
+            );
+        } catch (\Exception $ex) {
+            $app['retour'] = $ex;
+        }
+        return new Response();
+    })
+    ->before($checkAuth, Application::EARLY_EVENT)
+    ->after($jsonReturn);
+
 return $gally;
