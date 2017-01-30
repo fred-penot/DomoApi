@@ -21,11 +21,13 @@ class Gally {
                 $sqlKeyword = "SELECT `key`, `value` FROM commande_vocale_keyword " .
                      "WHERE commande_vocale_id = ".$command['commande_vocale_id']." ;";
                 $resultKeyword = $this->db->fetchAll($sqlKeyword);
-                $sqlMessageSuccess = "SELECT `message`, `is_repeat` FROM commande_vocale_message " .
-                    "WHERE commande_vocale_id = ".$command['commande_vocale_id']." AND success=1 ;";
+                $sqlMessageSuccess = "SELECT gim.message, cvm.is_repeat FROM commande_vocale_message cvm " .
+                    "JOIN gally_ia_message gim ON gim.id=cvm.gally_ia_message_id " .
+                    "WHERE cvm.commande_vocale_id = ".$command['commande_vocale_id']." AND success=1 ;";
+                $sqlMessageError = "SELECT gim.message, cvm.is_repeat FROM commande_vocale_message cvm " .
+                    "JOIN gally_ia_message gim ON gim.id=cvm.gally_ia_message_id " .
+                    "WHERE cvm.commande_vocale_id = ".$command['commande_vocale_id']." AND success=0 ;";
                 $resultMessageSuccess = $this->db->fetchAll($sqlMessageSuccess);
-                $sqlMessageError = "SELECT `message`, `is_repeat` FROM commande_vocale_message " .
-                    "WHERE commande_vocale_id = ".$command['commande_vocale_id']." AND success=0 ;";
                 $resultMessageError = $this->db->fetchAll($sqlMessageError);
                 $messages = [
                     'success' => $resultMessageSuccess,
