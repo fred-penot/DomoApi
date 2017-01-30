@@ -49,7 +49,7 @@ class Meteo {
                         ];
                         $previsions[str_replace($today.' ', '', $time['hour'])] = $prevision;
                     }
-                    if ($timestamp > $time['timestamp1'] && $timestamp < $time['timestamp2']) {
+                    if ($timestamp > $time['timestamp1'] && $time['timestamp2'] && $timestamp < $time['timestamp2']) {
                         $tMin = $infos[$time['hour']]['temperature']['2m'];
                         $tMax = $infos[$time['hour2']]['temperature']['2m'];
                         $rapport = 1 - (($time['timestamp2']-$timestamp)/10800);
