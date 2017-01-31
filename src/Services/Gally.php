@@ -156,6 +156,64 @@ class Gally {
         }
     }
 
+    public function getIaMessages() {
+        try {
+            $query = 'SELECT * FROM gally_ia_message ;';
+            $result = $this->db->fetchAll($query);
+            return $result;
+        } catch (\Exception $ex) {
+            return $ex;
+        }
+    }
+
+    public function getIaMessagesByName($word) {
+        try {
+            $query = 'SELECT * FROM gally_ia_message WHERE message like "%'.$word.'%" ;';
+            $result = $this->db->fetchAll($query);
+            return $result;
+        } catch (\Exception $ex) {
+            return $ex;
+        }
+    }
+
+    public function getCommandesVocale() {
+        try {
+            $query = 'SELECT cv.id as id, cv.name as command_name, cf.name as function_name FROM commande_vocale cv '.
+                'JOIN commande_function cf ON cf.id=cv.commande_function_id;';
+            $result = $this->db->fetchAll($query);
+            return $result;
+        } catch (\Exception $ex) {
+            return $ex;
+        }
+    }
+
+    public function getCommandesVocaleByName($word) {
+        try {
+            $query = 'SELECT cv.id as id, cv.name as command_name, cf.name as function_name FROM commande_vocale cv '.
+                'JOIN commande_function cf ON cf.id=cv.commande_function_id '.
+                'WHERE cv.name like "%'.$word.'%" ;';
+            $result = $this->db->fetchAll($query);
+            return $result;
+        } catch (\Exception $ex) {
+            return $ex;
+        }
+    }
+
+    public function saveCommandeVocaleMessage($commandId, $messageId, $success, $repeat) {
+        try {
+            $query = 'INSERT INTO commande_vocale_message (`commande_vocale_id`, `gally_ia_message_id` , `success`, `is_repeat`) VALUES ' .
+                '('.$commandId.', '.$messageId.', '.$success.', '.$repeat.');';
+            $result = $this->db->exec($query);
+            if (! $result) {
+                throw new \Exception(
+                    "Erreur lors de la sauvegarde du message de la commande vocale.");
+            }
+            return true;
+        } catch (\Exception $ex) {
+            return $ex;
+        }
+    }
+
     private function getCommandFunction($name) {
         try {
             $sqlCommandFunction = "SELECT * FROM commande_function WHERE UPPER(name)='" .

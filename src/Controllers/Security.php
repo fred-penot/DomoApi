@@ -11,8 +11,8 @@ $security->get('/api/auth/{login}/{password}',
             if ($auth instanceof \Exception) {
                 throw new \Exception($auth->getMessage());
             }
-            $app['newToken'] = $auth;
-            $app['retour'] = true;
+            $app['newToken'] = $auth['token'];
+            $app['retour'] = $auth;
         } catch (\Exception $ex) {
             $app['retour'] = $ex;
         }

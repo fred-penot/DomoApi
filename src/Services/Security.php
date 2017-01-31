@@ -19,10 +19,14 @@ class Security {
                 throw new \Exception("Utilisateur inconnu");
             }
             $token = $this->generateAndUpdateToken($result[0]["id"]);
+            $profil = $result[0]["profil"];
             if ($token instanceof \Exception) {
                 throw new \Exception($token->getMessage());
             }
-            return $token;
+            return [
+                'token' => $token,
+                'profil' => $profil,
+            ];
         } catch (\Exception $ex) {
             return $ex;
         }

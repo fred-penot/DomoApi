@@ -144,4 +144,104 @@ $gally->get('/api/get/history/command/day/{token}/{commandeVocaleId}/{timestamp}
     ->before($checkAuth, Application::EARLY_EVENT)
     ->after($jsonReturn);
 
+$gally->get('/api/get/ia/messages/{token}',
+    function ($token) use ($app) {
+        try {
+            $getIaMessages = $app['service.gally']->getIaMessages();
+            if ($getIaMessages instanceof \Exception) {
+                throw new \Exception($getIaMessages->getMessage());
+            }
+            $app['retour'] = array(
+                "data" => array(
+                    "messages" => $getIaMessages
+                )
+            );
+        } catch (\Exception $ex) {
+            $app['retour'] = $ex;
+        }
+        return new Response();
+    })
+    ->before($checkAuth, Application::EARLY_EVENT)
+    ->after($jsonReturn);
+
+$gally->get('/api/get/ia/search/message/{token}/{word}',
+    function ($token, $word) use ($app) {
+        try {
+            $getIaMessagesByName = $app['service.gally']->getIaMessagesByName($word);
+            if ($getIaMessagesByName instanceof \Exception) {
+                throw new \Exception($getIaMessagesByName->getMessage());
+            }
+            $app['retour'] = array(
+                "data" => array(
+                    "messages" => $getIaMessagesByName
+                )
+            );
+        } catch (\Exception $ex) {
+            $app['retour'] = $ex;
+        }
+        return new Response();
+    })
+    ->before($checkAuth, Application::EARLY_EVENT)
+    ->after($jsonReturn);
+
+$gally->get('/api/get/ia/commands/{token}',
+    function ($token) use ($app) {
+        try {
+            $getCommandesVocale = $app['service.gally']->getCommandesVocale();
+            if ($getCommandesVocale instanceof \Exception) {
+                throw new \Exception($getCommandesVocale->getMessage());
+            }
+            $app['retour'] = array(
+                "data" => array(
+                    "commands" => $getCommandesVocale
+                )
+            );
+        } catch (\Exception $ex) {
+            $app['retour'] = $ex;
+        }
+        return new Response();
+    })
+    ->before($checkAuth, Application::EARLY_EVENT)
+    ->after($jsonReturn);
+
+$gally->get('/api/get/ia/search/command/{token}/{word}',
+    function ($token, $word) use ($app) {
+        try {
+            $getCommandesVocaleByName = $app['service.gally']->getCommandesVocaleByName($word);
+            if ($getCommandesVocaleByName instanceof \Exception) {
+                throw new \Exception($getCommandesVocaleByName->getMessage());
+            }
+            $app['retour'] = array(
+                "data" => array(
+                    "commands" => $getCommandesVocaleByName
+                )
+            );
+        } catch (\Exception $ex) {
+            $app['retour'] = $ex;
+        }
+        return new Response();
+    })
+    ->before($checkAuth, Application::EARLY_EVENT)
+    ->after($jsonReturn);
+
+$gally->get('/api/save/ia/command/message/{token}/{commandId}/{messageId}/{success}/{repeat}',
+    function ($token, $commandId, $messageId, $success, $repeat) use ($app) {
+        try {
+            $saveCommandeVocaleMessage = $app['service.gally']->saveCommandeVocaleMessage($commandId, $messageId, $success, $repeat);
+            if ($saveCommandeVocaleMessage instanceof \Exception) {
+                throw new \Exception($saveCommandeVocaleMessage->getMessage());
+            }
+            $app['retour'] = array(
+                "data" => array(
+                    "save" => $saveCommandeVocaleMessage
+                )
+            );
+        } catch (\Exception $ex) {
+            $app['retour'] = $ex;
+        }
+        return new Response();
+    })
+    ->before($checkAuth, Application::EARLY_EVENT)
+    ->after($jsonReturn);
+
 return $gally;
