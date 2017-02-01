@@ -214,6 +214,84 @@ class Gally {
         }
     }
 
+    public function getIaScenarii() {
+        try {
+            $query = 'SELECT gis.id as id, gis.name as name, gis.gally_ia_type_scenario_id as type_id, '.
+                'gits.name as type_name FROM gally_ia_scenario gis '.
+                'JOIN gally_ia_type_scenario gits ON gits.id=gis.gally_ia_type_scenario_id;';
+            $result = $this->db->fetchAll($query);
+            return $result;
+        } catch (\Exception $ex) {
+            return $ex;
+        }
+    }
+
+    public function getIaScenariiByName($word) {
+        try {
+            $query = 'SELECT gis.id as id, gis.name as name, gis.gally_ia_type_scenario_id as type_id, '.
+                'gits.name as type_name FROM gally_ia_scenario gis '.
+                'JOIN gally_ia_type_scenario gits ON gits.id=gis.gally_ia_type_scenario_id '.
+                'WHERE gis.name like "%'.$word.'%" ;';
+            $result = $this->db->fetchAll($query);
+            return $result;
+        } catch (\Exception $ex) {
+            return $ex;
+        }
+    }
+
+    public function getIaScenarioByTypeAndName($typeId, $word) {
+        try {
+            $query = 'SELECT gis.id, gis.name as name, gis.gally_ia_type_scenario_id as type_id '.
+                'FROM gally_ia_scenario gis '.
+                'WHERE name like "%'.$word.'%" AND gally_ia_type_scenario_id='.$typeId.' ;';
+            $result = $this->db->fetchAll($query);
+            return $result[0];
+        } catch (\Exception $ex) {
+            return $ex;
+        }
+    }
+
+    public function launchIaScenario($id) {
+        try {
+            $query = 'SELECT gise.value as value, gits.value as type '.
+                'FROM gally_ia_scenario_element gise '.
+                'JOIN gally_ia_scenario gis ON gis.id=gise.gally_ia_scenario_id '.
+                'JOIN gally_ia_type_scenario gits ON gits.id=gis.gally_ia_type_scenario_id '.
+                'WHERE gis.id='.$id.' ;';
+            $elements = $this->db->fetchAll($query);
+            foreach ($elements as $element) {
+                if ($element['type'] == 'light') {
+                    $this->putLightAction($element['value'], true);
+                } else if ($element['type'] == 'audio') {
+                    // todo
+                }
+            }
+            return true;
+        } catch (\Exception $ex) {
+            return $ex;
+        }
+    }
+
+    private function putLightAction($name, $action) {
+        try {
+            $arg = "f";
+            if (true) {
+                $arg = "n";
+            }
+            $output = array();
+            exec('tdtool -' . $arg . ' ' . $name, $output);
+            $statut = false;
+            if (count($output) > 0) {
+                if (substr($output[0], - 7, 7) == 'Success') {
+                    $statut = true;
+                }
+            }
+            return $statut;
+        } catch (\Exception $ex) {
+            return $ex;
+        }
+    }
+
     private function getCommandFunction($name) {
         try {
             $sqlCommandFunction = "SELECT * FROM commande_function WHERE UPPER(name)='" .

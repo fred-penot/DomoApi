@@ -244,4 +244,84 @@ $gally->get('/api/save/ia/command/message/{token}/{commandId}/{messageId}/{succe
     ->before($checkAuth, Application::EARLY_EVENT)
     ->after($jsonReturn);
 
+$gally->get('/api/get/ia/scenarii/{token}',
+    function ($token) use ($app) {
+        try {
+            $getIaScenarii = $app['service.gally']->getIaScenarii();
+            if ($getIaScenarii instanceof \Exception) {
+                throw new \Exception($getIaScenarii->getMessage());
+            }
+            $app['retour'] = array(
+                "data" => array(
+                    "scenarii" => $getIaScenarii
+                )
+            );
+        } catch (\Exception $ex) {
+            $app['retour'] = $ex;
+        }
+        return new Response();
+    })
+    ->before($checkAuth, Application::EARLY_EVENT)
+    ->after($jsonReturn);
+
+$gally->get('/api/search/ia/name/scenarii/{token}/{word}',
+    function ($token, $word) use ($app) {
+        try {
+            $getIaScenariiByName = $app['service.gally']->getIaScenariiByName($word);
+            if ($getIaScenariiByName instanceof \Exception) {
+                throw new \Exception($getIaScenariiByName->getMessage());
+            }
+            $app['retour'] = array(
+                "data" => array(
+                    "scenarii" => $getIaScenariiByName
+                )
+            );
+        } catch (\Exception $ex) {
+            $app['retour'] = $ex;
+        }
+        return new Response();
+    })
+    ->before($checkAuth, Application::EARLY_EVENT)
+    ->after($jsonReturn);
+
+$gally->get('/api/get/ia/scenario/type/name/{token}/{type}/{word}',
+    function ($token, $type, $word) use ($app) {
+        try {
+            $getIaScenarioByTypeAndName = $app['service.gally']->getIaScenarioByTypeAndName($type, $word);
+            if ($getIaScenarioByTypeAndName instanceof \Exception) {
+                throw new \Exception($getIaScenarioByTypeAndName->getMessage());
+            }
+            $app['retour'] = array(
+                "data" => array(
+                    "scenario" => $getIaScenarioByTypeAndName
+                )
+            );
+        } catch (\Exception $ex) {
+            $app['retour'] = $ex;
+        }
+        return new Response();
+    })
+    ->before($checkAuth, Application::EARLY_EVENT)
+    ->after($jsonReturn);
+
+$gally->get('/api/launch/ia/scenario/{token}/{id}',
+    function ($token, $id) use ($app) {
+        try {
+            $launchIaScenario = $app['service.gally']->launchIaScenario($id);
+            if ($launchIaScenario instanceof \Exception) {
+                throw new \Exception($launchIaScenario->getMessage());
+            }
+            $app['retour'] = array(
+                "data" => array(
+                    "launch" => $launchIaScenario
+                )
+            );
+        } catch (\Exception $ex) {
+            $app['retour'] = $ex;
+        }
+        return new Response();
+    })
+    ->before($checkAuth, Application::EARLY_EVENT)
+    ->after($jsonReturn);
+
 return $gally;
