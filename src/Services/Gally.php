@@ -275,7 +275,7 @@ class Gally {
     private function putLightAction($name, $action) {
         try {
             $arg = "f";
-            if (true) {
+            if ($action) {
                 $arg = "n";
             }
             $output = array();
