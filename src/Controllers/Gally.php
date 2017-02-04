@@ -304,16 +304,29 @@ $gally->get('/api/get/ia/scenario/type/name/{token}/{type}/{word}',
     ->before($checkAuth, Application::EARLY_EVENT)
     ->after($jsonReturn);
 
-$gally->get('/api/launch/ia/scenario/{token}/{id}',
-    function ($token, $id) use ($app) {
+$gally->get('/api/launch/ia/scenario/{token}/{id}/{action}',
+    function ($token, $id, $action) use ($app) {
         try {
-            $launchIaScenario = $app['service.gally']->launchIaScenario($id);
-            if ($launchIaScenario instanceof \Exception) {
-                throw new \Exception($launchIaScenario->getMessage());
+            $launch = false;
+            $scenarii = $app['service.gally']->getIaScenario($id);
+            if ($scenarii instanceof \Exception) {
+                throw new \Exception($scenarii->getMessage());
+            }
+            foreach ($scenarii as $scenario) {
+                if ($scenario['type'] == 'light') {
+                    $statutLight = $app['service.domotic']->putAction($scenario['value'], $action);
+                    if ($statutLight instanceof \Exception) {
+                        throw new \Exception($statutLight->getMessage());
+                    }
+                    $launch = $statutLight;
+                } elseif ($scenario['type'] == 'audio') {
+                    //todo
+                    $launch = true;
+                }
             }
             $app['retour'] = array(
                 "data" => array(
-                    "launch" => $launchIaScenario
+                    "launch" => $launch
                 )
             );
         } catch (\Exception $ex) {
