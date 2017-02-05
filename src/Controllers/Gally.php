@@ -312,7 +312,11 @@ $gally->get('/api/launch/ia/scenario/{token}/{id}/{action}',
             if ($scenarii instanceof \Exception) {
                 throw new \Exception($scenarii->getMessage());
             }
+            $type = '';
+            $room = '';
+            $title = '';
             foreach ($scenarii as $scenario) {
+                $type = $scenario['type'];
                 if ($scenario['type'] == 'light') {
                     $statutLight = $app['service.domotic']->putAction($scenario['value'], $action);
                     if ($statutLight instanceof \Exception) {
@@ -320,9 +324,44 @@ $gally->get('/api/launch/ia/scenario/{token}/{id}/{action}',
                     }
                     $launch = $statutLight;
                 } elseif ($scenario['type'] == 'audio') {
-                    //todo
-                    $launch = true;
+                    if ($scenario['name'] == 'room') {
+                        $room = $scenario['value'];
+                    } else if ($scenario['name'] == 'title') {
+                        $title = $scenario['value'];
+                    }
                 }
+            }
+            if ($type == 'audio' && $room != '' && $title != '') {
+                $device = $app['service.freebox.media']->getDeviceByName($room);
+                if ($device instanceof \Exception) {
+                    throw new \Exception($device->getMessage());
+                }
+                if ($action == 'true') {
+                    $addMedia = $app['service.freebox.media']->addMediaFolderByName($type, $title,
+                        $device['id']);
+                    if ($addMedia instanceof \Exception) {
+                        throw new \Exception($addMedia->getMessage());
+                    }
+                    $startPlayer = $app['service.freebox.media']->startPlayer($device['id']);
+                    if ($startPlayer instanceof \Exception) {
+                        throw new \Exception($startPlayer->getMessage());
+                    }
+                    $launchPlaylist = $app['service.freebox.media']->launchPlaylist($device['id']);
+                    if ($launchPlaylist instanceof \Exception) {
+                        throw new \Exception($launchPlaylist->getMessage());
+                    }
+                } else {
+                    $stopPlayer = $app['service.freebox.media']->stopPlayer($device['id']);
+                    if ($stopPlayer instanceof \Exception) {
+                        throw new \Exception($stopPlayer->getMessage());
+                    }
+                    $serviceFreebox = $app['service.freebox']->setToken($app['parameter.freebox.token']);
+                    $stopMedia = $serviceFreebox->stopMedia($device['realname']);
+                    if ($stopMedia instanceof \Exception) {
+                        throw new \Exception($stopMedia->getMessage());
+                    }
+                }
+                $launch = true;
             }
             $app['retour'] = array(
                 "data" => array(

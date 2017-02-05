@@ -263,7 +263,7 @@ class FreeboxMedia {
     public function launchPlaylist($deviceId) {
         try {
             exec(
-                '/usr/local/zend/bin/php /home/apps/DomoApi/app/console playlist:launch ' . $deviceId);
+                '/usr/local/zend/bin/php /var/www/html/domoapi/app/console playlist:launch ' . $deviceId);
             return true;
         } catch (\Exception $ex) {
             return $ex;

@@ -239,11 +239,12 @@ class Gally {
         }
     }
 
-    public function getIaScenarioByTypeAndName($typeId, $word) {
+    public function getIaScenarioByTypeAndName($type, $word) {
         try {
             $query = 'SELECT gis.id, gis.name as name, gis.gally_ia_type_scenario_id as type_id '.
                 'FROM gally_ia_scenario gis '.
-                'WHERE name like "%'.$word.'%" AND gally_ia_type_scenario_id='.$typeId.' ;';
+                'JOIN gally_ia_type_scenario gits ON gits.id=gis.gally_ia_type_scenario_id '.
+                'WHERE gis.name like "%'.$word.'%" AND gits.value="'.$type.'" ;';
             $result = $this->db->fetchAll($query);
             return $result[0];
         } catch (\Exception $ex) {
@@ -253,7 +254,7 @@ class Gally {
 
     public function getIaScenario($id) {
         try {
-            $query = 'SELECT gise.value as value, gits.value as type '.
+            $query = 'SELECT gise.name as name, gise.value as value, gits.value as type '.
                 'FROM gally_ia_scenario_element gise '.
                 'JOIN gally_ia_scenario gis ON gis.id=gise.gally_ia_scenario_id '.
                 'JOIN gally_ia_type_scenario gits ON gits.id=gis.gally_ia_type_scenario_id '.
