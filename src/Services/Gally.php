@@ -17,6 +17,10 @@ class Gally {
                  " FROM commande_vocale cv JOIN commande_function cf ON cf.id=cv.commande_function_id ;";
             $resultCommand = $this->db->fetchAll($sql);
             $commands = [];
+            $sqlMessageInactive = "SELECT gim.message, cvm.is_repeat FROM commande_vocale_message cvm " .
+                "JOIN gally_ia_message gim ON gim.id=cvm.gally_ia_message_id " .
+                "WHERE cvm.commande_vocale_id is null AND success=1 ;";
+            $resultMessageInactive = $this->db->fetchAll($sqlMessageInactive);
             foreach ($resultCommand as $command) {
                 $sqlKeyword = "SELECT `key`, `value` FROM commande_vocale_keyword " .
                      "WHERE commande_vocale_id = ".$command['commande_vocale_id']." ;";
@@ -32,6 +36,7 @@ class Gally {
                 $messages = [
                     'success' => $resultMessageSuccess,
                     'error' => $resultMessageError,
+                    'inactive' => $resultMessageInactive,
                 ];
 		        $commands[] = [
                     "id" => $command['commande_vocale_id'],
