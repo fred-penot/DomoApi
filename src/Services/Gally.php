@@ -17,10 +17,16 @@ class Gally {
                  " FROM commande_vocale cv JOIN commande_function cf ON cf.id=cv.commande_function_id ;";
             $resultCommand = $this->db->fetchAll($sql);
             $commands = [];
-            $sqlMessageInactive = "SELECT gim.message, cvm.is_repeat FROM commande_vocale_message cvm " .
-                "JOIN gally_ia_message gim ON gim.id=cvm.gally_ia_message_id " .
-                "WHERE cvm.commande_vocale_id is null AND success=1 ;";
+            $sqlMessageInactive = "SELECT gim.message FROM commande_vocale_message_retour cvmr " .
+                "JOIN gally_ia_message gim ON gim.id=cvmr.gally_ia_message_id " .
+                "JOIN commande_vocale_message_type_retour cvmtr ON cvmtr.id=cvmr.commande_vocale_message_type_retour_id " .
+                "WHERE cvmtr.name='inactive' ;";
             $resultMessageInactive = $this->db->fetchAll($sqlMessageInactive);
+            $sqlMessageRoomDefined = "SELECT gim.message FROM commande_vocale_message_retour cvmr " .
+                "JOIN gally_ia_message gim ON gim.id=cvmr.gally_ia_message_id " .
+                "JOIN commande_vocale_message_type_retour cvmtr ON cvmtr.id=cvmr.commande_vocale_message_type_retour_id " .
+                "WHERE cvmtr.name='roomDefined' ;";
+            $resultMessageRoomDefined = $this->db->fetchAll($sqlMessageRoomDefined);
             foreach ($resultCommand as $command) {
                 $sqlKeyword = "SELECT `key`, `value` FROM commande_vocale_keyword " .
                      "WHERE commande_vocale_id = ".$command['commande_vocale_id']." ;";
@@ -37,6 +43,7 @@ class Gally {
                     'success' => $resultMessageSuccess,
                     'error' => $resultMessageError,
                     'inactive' => $resultMessageInactive,
+                    'roomDefined' => $resultMessageRoomDefined,
                 ];
 		        $commands[] = [
                     "id" => $command['commande_vocale_id'],
