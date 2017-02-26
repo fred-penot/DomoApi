@@ -109,3 +109,6 @@ $app['service.analyze.media'] = function () {
 $app['service.meteo'] = function () {
     return new DomoApi\Services\Meteo();
 };
+$app['service.remote'] = function ($app) {
+    return new DomoApi\Services\Remote($app['db']);
+};

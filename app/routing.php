@@ -12,3 +12,4 @@ $app->mount('/allocine', include __DIR__ . '/../src/Controllers/Allocine.php');
 $app->mount('/gally', include __DIR__ . '/../src/Controllers/Gally.php');
 $app->mount('/freebox', include __DIR__ . '/../src/Controllers/Freebox.php');
 $app->mount('/meteo', include __DIR__ . '/../src/Controllers/Meteo.php');
+$app->mount('/remote', include __DIR__ . '/../src/Controllers/Remote.php');
